@@ -1,0 +1,26 @@
+{
+  "name": "astronauts",
+  "version": "1.0.0",
+  "description": "Astronauts excercise",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node-dev src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kikinecek/Astronauts.git"
+  },
+  "author": "Kristian Bily",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kikinecek/Astronauts/issues"
+  },
+  "homepage": "https://github.com/kikinecek/Astronauts#readme",
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "express": "^4.17.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.2"
+  }
+}
