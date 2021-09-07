@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  api:
+    image: astronauts-api
+    build: ./
+    container_name: astronauts-api
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      MYSQL_DB_HOST: db
+      MYSQL_DB_PORT: 3333
+      MYSQL_DB_USER: root
+      MYSQL_DB_PASSWORD: ""
+      MYSQL_DB_DATABASE: astronauts
+    volumes:
+      - ./src:/app/src
+  db:
+    image: astronauts-db
+    build: ../astronauts-db
+    container_name: astronauts-db
+    ports:
+      - 3333:3333
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      BITNAMI_DEBUG: "true"
+      TZ: UTC
+    volumes:
+      - db:/bitnami/mariadb
+
+volumes:
+  db:
+  
