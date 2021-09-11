@@ -180,6 +180,7 @@ class AstronautsDbApi {
           ON  a_s.astronaut_id = a.id
           AND a_s.expired_at IS NULL
           AND a_s.is_deleted IS FALSE
+        ORDER BY a.id DESC
       `
     )
 

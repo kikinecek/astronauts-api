@@ -20,7 +20,16 @@ export interface DefaultDatabaseConfig {
   DEFAULT_DATABASE: string;
 };
 
+export interface CorsConfig {
+  ORIGIN: string;
+};
+
+export interface DefaultCorsConfig {
+  DEFAULT_ORIGIN: string;
+}
+
 /** Interface describing the final config */
 export interface Config {
-  DB: DatabaseConfig
+  DB: DatabaseConfig,
+  CORS: CorsConfig
 };

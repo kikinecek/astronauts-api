@@ -22,11 +22,11 @@ const {
 
 /** Database config */
 const config: DatabaseConfig = {
-  HOST: MYSQL_DB_HOST || defaultConfig.DEFAULT_HOST,
-  PORT: MYSQL_DB_PORT || defaultConfig.DEFAULT_PORT,
-  USER: MYSQL_DB_USER || defaultConfig.DEFAULT_USER,
-  PASSWORD: MYSQL_DB_PASSWORD || defaultConfig.DEFAULT_PASSWORD,
-  DATABASE: MYSQL_DB_DATABASE || defaultConfig.DEFAULT_DATABASE
+  HOST: MYSQL_DB_HOST ?? defaultConfig.DEFAULT_HOST,
+  PORT: MYSQL_DB_PORT ?? defaultConfig.DEFAULT_PORT,
+  USER: MYSQL_DB_USER ?? defaultConfig.DEFAULT_USER,
+  PASSWORD: MYSQL_DB_PASSWORD ?? defaultConfig.DEFAULT_PASSWORD,
+  DATABASE: MYSQL_DB_DATABASE ?? defaultConfig.DEFAULT_DATABASE
 };
 
 export default config;

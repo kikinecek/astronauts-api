@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 import { connect, transaction } from "../db";
 import AstronautsDbApi from "../DbApi/AstronautsDbApi";
@@ -6,8 +6,11 @@ import {
   AstronautDeserialized,
   AstronautInMemory,
 
+  AstronautSerialized,
+
   transformAstronautSerializedToDeserialized
 } from "../types/astronaut";
+import { AstronautFormValidator } from "../validation/AstronautValidator";
 
 /**
  * Class is used as controller for astronaut endpoints
@@ -18,13 +21,18 @@ class AstronautsController {
    * @param req is http request
    * @param res is http response
    */
-  public static async getAstronauts(req: Request, res: Response) {
-    const astronauts = await connect(async (connection) => {
-      return await AstronautsDbApi.getAstronauts(connection)
-    }
-    );
+  public static async getAstronauts(req: Request, res: Response, next: NextFunction) {
+    try {
+      const astronauts = await connect(async (connection) =>
+        await AstronautsDbApi.getAstronauts(connection)
+      );
 
-    res.status(StatusCodes.OK).json(astronauts);
+      res.status(StatusCodes.OK).json(astronauts);
+    } catch (err) {
+      console.log(err);
+
+      next(err);
+    }
   }
 
   /**
@@ -32,17 +40,23 @@ class AstronautsController {
    * @param req is http request
    * @param res is http response
    */
-  public static async getAstronautById(req: Request, res: Response) {
+  public static async getAstronautById(req: Request, res: Response, next: NextFunction) {
     const astronautId: number = parseInt(req.params.astronautId);
-    
-    const astronaut: AstronautInMemory = await connect(async (connection) => 
-      await AstronautsDbApi.getAstronautById(
-        connection,
-        astronautId
-      )
-    )
 
-    res.status(StatusCodes.OK).json(astronaut);
+    try {
+      const astronaut: AstronautInMemory = await connect(async (connection) =>
+        await AstronautsDbApi.getAstronautById(
+          connection,
+          astronautId
+        )
+      )
+
+      res.status(StatusCodes.OK).json(astronaut);
+    } catch (err) {
+      console.log(err);
+
+      next(err);
+    }
   }
 
   /**
@@ -50,17 +64,28 @@ class AstronautsController {
    * @param req is http request
    * @param res is http response
    */
-  public static async createAstronaut(req: Request, res: Response) {
-    const astronaut: AstronautDeserialized = 
-      transformAstronautSerializedToDeserialized(req.body.astronaut);
+  public static async createAstronaut(req: Request, res: Response, next: NextFunction) {
+    // get astronaut data from request
+    const astronautSerialized: AstronautSerialized = req.body;
+    try {
+      // validate astronauts data with JOI
+      await AstronautFormValidator.validateAsync(astronautSerialized);
 
-    await connect(async (connection) => {
-      await transaction(connection, async () => {
-        await AstronautsDbApi.createAstronaut(connection, astronaut);
+      const astronaut: AstronautDeserialized =
+        transformAstronautSerializedToDeserialized(astronautSerialized);
+
+      await connect(async (connection) => {
+        await transaction(connection, async () => {
+          await AstronautsDbApi.createAstronaut(connection, astronaut);
+        });
       });
-    });
 
-    res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+      res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+    } catch (err) {
+      console.log(err);
+
+      next(err);
+    }
   }
 
   /**
@@ -68,21 +93,34 @@ class AstronautsController {
    * @param req is http request
    * @param res is http response
    */
-  public static async updateAstronaut(req: Request, res: Response) {
+  public static async updateAstronaut(req: Request, res: Response, next: NextFunction) {
     const astronautId: number = parseInt(req.params.astronautId);
-    const astronaut: AstronautDeserialized =
-      transformAstronautSerializedToDeserialized(req.body.astronaut);
-    
-    await connect(async (connection) => {
-      await transaction(connection, async () => {
-        await AstronautsDbApi.updateAstronaut(
-          connection,
-          astronautId,
-          astronaut
-        )
+
+    // get astronaut data from request
+    const astronautSerialized: AstronautSerialized = req.body;
+
+    try {
+      // validate astronauts data with JOI
+      await AstronautFormValidator.validateAsync(astronautSerialized);
+
+      const astronaut: AstronautDeserialized =
+        transformAstronautSerializedToDeserialized(astronautSerialized);
+
+      await connect(async (connection) => {
+        await transaction(connection, async () => {
+          await AstronautsDbApi.updateAstronaut(
+            connection,
+            astronautId,
+            astronaut
+          )
+        })
       })
-    })
-    res.status(StatusCodes.OK).send();
+      res.status(StatusCodes.OK).send();
+    } catch (err) {
+      console.log(err);
+
+      next(err);
+    }
   }
 
   /**
@@ -90,17 +128,23 @@ class AstronautsController {
    * @param req is http request
    * @param res is http response
    */
-  public static async deleteAstronaut(req: Request, res: Response) {
-    const astronautId: number = parseInt(req.params.astronautId);
+  public static async deleteAstronaut(req: Request, res: Response, next: NextFunction) {
+    try {
+      const astronautId: number = parseInt(req.params.astronautId);
 
-    await connect(async (connection) => 
-      await AstronautsDbApi.deleteAstronautById(
-        connection,
-        astronautId
-      )
-    );
+      await connect(async (connection) =>
+        await AstronautsDbApi.deleteAstronautById(
+          connection,
+          astronautId
+        )
+      );
 
-    res.status(StatusCodes.OK).send();
+      res.status(StatusCodes.OK).send();
+    } catch (err) {
+      console.log(err);
+
+      next(err);
+    }
   }
 };
 
