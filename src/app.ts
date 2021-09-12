@@ -34,7 +34,7 @@ const startApp = () => {
     });
   });
   
-  app.listen(3001);
+  app.listen(config.APP.PORT);
 }
 
 export default startApp;

@@ -1,14 +1,14 @@
-import { DatabaseConfig, DefaultDatabaseConfig } from "../types/config";
+import { DatabaseConfig } from "../types/config";
 
 /**
  * Config with default values that are used in the case that the value are missing in environment variables
  */
-const defaultConfig: DefaultDatabaseConfig = {
-  DEFAULT_HOST: 'host',
-  DEFAULT_PORT: "3333",
-  DEFAULT_USER: 'root',
-  DEFAULT_PASSWORD: '',
-  DEFAULT_DATABASE: 'astronauts'
+const defaultConfig: DatabaseConfig = {
+  HOST: 'host',
+  PORT: "3333",
+  USER: 'root',
+  PASSWORD: '',
+  DATABASE: 'astronauts'
 };
 
 /** All envirnment variables used to configure database */
@@ -22,11 +22,11 @@ const {
 
 /** Database config */
 const config: DatabaseConfig = {
-  HOST: MYSQL_DB_HOST ?? defaultConfig.DEFAULT_HOST,
-  PORT: MYSQL_DB_PORT ?? defaultConfig.DEFAULT_PORT,
-  USER: MYSQL_DB_USER ?? defaultConfig.DEFAULT_USER,
-  PASSWORD: MYSQL_DB_PASSWORD ?? defaultConfig.DEFAULT_PASSWORD,
-  DATABASE: MYSQL_DB_DATABASE ?? defaultConfig.DEFAULT_DATABASE
+  HOST: MYSQL_DB_HOST ?? defaultConfig.HOST,
+  PORT: MYSQL_DB_PORT ?? defaultConfig.PORT,
+  USER: MYSQL_DB_USER ?? defaultConfig.USER,
+  PASSWORD: MYSQL_DB_PASSWORD ?? defaultConfig.PASSWORD,
+  DATABASE: MYSQL_DB_DATABASE ?? defaultConfig.DATABASE
 };
 
 export default config;
